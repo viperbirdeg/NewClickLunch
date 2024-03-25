@@ -12,9 +12,10 @@ import {
 } from "@/libs/val";
 import Image from "next/image";
 import ReCAPTCHA from "react-google-recaptcha";
+
+
 export default function Registrar() {
   const [captcha, setCaptcha] = useState();
-
   const router = useRouter();
   const [datos, setDatos] = useState({
     nombre: "",
