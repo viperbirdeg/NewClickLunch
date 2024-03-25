@@ -7,6 +7,6 @@ To run this section:
     npm i
     npm run dev
 ~~~
-And thanks for read this ***<3***
+And thanks for read this <font color='red'>***<3***</font>
 
 ## Author: Hi Stern
