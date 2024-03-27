@@ -3,9 +3,11 @@ import React from "react";
 import { useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-const BtnOpciones = () => {
+const BtnOpciones = (id = 1, ) => {
   const [isOpen, setIsOpen] = useState(false);
   const {data:session}=useSession()
+  /*session.user.id_cuenta
+   */
   return (
     <div className="fixed top-50 left-50 z-50 p-4">
       <button
@@ -59,7 +61,7 @@ const BtnOpciones = () => {
                   />
                   Perfil
                 </Link>
-                <Link href={"/client/pedidos/" + session.user.id_cuenta} className="text-gray-300 hover:bg-gray-800 hover:border-l-4 hover:border-gray-300 hover:text-white block p-2 transition duration-200">
+                <Link href={"/client/pedidos/" + id} className="text-gray-300 hover:bg-gray-800 hover:border-l-4 hover:border-gray-300 hover:text-white block p-2 transition duration-200">
                   <img
                     className="pl-[4px]"
                     src="/img/sidebar/reloj.png"

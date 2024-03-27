@@ -4,17 +4,17 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 export default function RootLayout({ children }) {
   const router = useRouter();
-  const session = useSession();
+  /*const session = useSession();
   if (session.data) {
-    if (session.data.user.tipo === 0) {
+    if (session.data.user.tipo === 0) {*/
       return (
         <>
           <BtnOpciones></BtnOpciones>
           {children}
         </>
       );
-    } else {
+    /*} else {
       router.push("/admin/pedidos");
-    }
+    }*/
   }
 }
