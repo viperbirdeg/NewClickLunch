@@ -5,15 +5,20 @@ import { useRouter } from "next/navigation";
 import BtnOpciones from "@/components/BtnOpciones";
 
 export default function Layout({ children }) {
-  const router = useRouter();
+
+  const session = useSession();
+
+  console.log(session.data);
+  console.log(session.data.user.tipo);
+  /*const router = useRouter();
   const { data: session } = useSession();
   if (session) {
-    if (session.user.tipo === 0) {
-      return <>
-      <BtnOpciones/>
-      {children};</>;
+    if (session.user.tipo === 0) {*/
+  return <>
+    <BtnOpciones />
+    {children};</>;/*
     } else {
       router.push("/admin/pedidos");
     }
-  }
+  }*/
 }

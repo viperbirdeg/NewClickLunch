@@ -9,6 +9,7 @@ export default function FormInicio() {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
+    tipo:0
   });
   const [captcha, setCaptcha] = useState();
   const [error, setError] = useState("");

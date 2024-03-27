@@ -22,7 +22,7 @@ export async function POST(req) {
       email: email,
       password: hashedPassword,
       saldo: 0,
-      tipo: false,
+      tipo: 0,
     };
     const result = await conn.query(
       "INSERT INTO cat_usuarios SET ?",

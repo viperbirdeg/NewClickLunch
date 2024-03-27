@@ -64,7 +64,7 @@ const handler = nextAuth({
         email: profile.email,
         password: "Google",
         saldo: 0,
-        tipo: false,
+        tipo: 0,
       };
       const result = await conn.query(
         "SELECT * FROM cat_usuarios WHERE email=?",
