@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 
 //Ruta de "apoyo"
 app.get("/api", (req, res) => {
-    res.json({ message: "Hola desi el servidor!" });
+    res.json({ message: "Servidor Activo!" });
 });
 
 
