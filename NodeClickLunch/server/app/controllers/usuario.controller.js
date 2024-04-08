@@ -29,7 +29,7 @@ const register = async (req, res) => {
 
     //Valida que no este registrado
     const validacionResult = await client.query(
-      `SELECT * FROM clicklunch."UsuariosInfo" WHERE email = $1`,
+      `SELECT * FROM clicklunch."UsuarioInfo" WHERE email = $1`,
       [email]
     );
     if (validacionResult.rowCount > 0) {
@@ -44,14 +44,9 @@ const register = async (req, res) => {
       [hashedPassword]
     );
     const idPassword = passwordResult.rows[0].id;
-    const rolResult = await client.query(
-      `INSERT INTO clicklunch."Rol"(rol) VALUES ($1) RETURNING id`,
-      [0]
-    );
-    const idRol = rolResult.rows[0].id;
     const userResult = await client.query(
-      `INSERT INTO clicklunch."Usuarios"(username, email, idrol, idtoken) VALUES ($1,$2,$3,$4) RETURNING id`,
-      [username, email, idRol, idPassword]
+      `INSERT INTO clicklunch."Usuario"(nombre, email, id_token) VALUES ($1,$2,$3)`,
+      [username, email, idPassword]
     );
 
     //Terminar y confirmar operacion  
@@ -59,7 +54,7 @@ const register = async (req, res) => {
 
     //Devolver datos
     if (userResult.rowCount > 0) {
-      const response = await datosUsuario(userResult.rows[0].id);
+      const response = await datosUsuario(email);
       return res.status(response.estado).json(response.message);
     }
     res.status(404).json({
@@ -91,7 +86,6 @@ const login = async (req, res) => {
     /*
     data = {
       email = "";
-      name = "";
       password = "";
     }
     */
@@ -99,7 +93,7 @@ const login = async (req, res) => {
 
     //Validar existencia
     const validacionResult = await client.query(
-      `SELECT * FROM clicklunch."UsuariosInfo" WHERE email = $1`,
+      `SELECT * FROM clicklunch."UsuarioInfo" WHERE email = $1`,
       [email]
     );
     if (validacionResult.rowCount == 0) {
@@ -112,16 +106,14 @@ const login = async (req, res) => {
     const datos = validacionResult.rows[0];
     if (await bcrypt.compare(data.password, datos.token)) {
       //Generar la sesion
-      req.session.name = datos.username;
       req.session.email = datos.email;
-      req.session.saldo = datos.saldo;
-      req.session.token = datos.token;
+      req.session.token = data.password;
       req.session.rol = datos.rol;
       return res.status(200).json({
         message: 'Ingreso correcto',
       });
     }
-    return res.status(401).json('Contraseña incorrecta');
+    return res.status(401).json({ message: 'Contraseña incorrecta' });
 
   } catch (error) {
     //Manejar errores
@@ -174,7 +166,7 @@ const update = async (req, res) => {
       `SELECT (idtoken) FROM clicklunch."Usuarios" WHERE email = $1`,
       [email]
     );
-    
+
     const validacionResult = await client.query(
       `UPDATE clicklunch."Token" set token = $1 WHERE id = $2`,
       [newToken, (id.rows[0].idtoken)]
@@ -206,7 +198,7 @@ const usersData = async (req, res) => {
   try {
 
     //Busqueda en db
-    const vistaResult = await client.query(`SELECT * FROM clicklunch."UsuariosInfo"`);
+    const vistaResult = await client.query(`SELECT * FROM clicklunch."UsuarioInfo"`);
 
     //Retorno de datos
     return res.status(200).json({ message: vistaResult });
@@ -224,11 +216,18 @@ const usersData = async (req, res) => {
 
 //Usado para obtener un usuario a partir de un identificador
 const userData = async (req, res) => {
+
+  /*
+    Formato data
+    {
+      email :''
+    }
+  */
   //Obtener identificador
-  const id = req.body.id;
+  const email = req.body.email;
 
   //Buscar sus datos
-  const userDatos = await datosUsuario(id);
+  const userDatos = await datosUsuario(email);
 
   //Retornar datos
   return res.status(userDatos.estado).json({
@@ -237,7 +236,7 @@ const userData = async (req, res) => {
 };
 
 //Funcion interna de obtencion de usuarios
-const datosUsuario = async id => {
+const datosUsuario = async email => {
   //Conexion con la bd
   const client = await pool.connect();
 
@@ -246,8 +245,8 @@ const datosUsuario = async id => {
 
     //Busqueda en db
     const vistaResult = await client.query(
-      `SELECT * FROM clicklunch."UsuariosInfo" WHERE "id" = ($1)`,
-      [id]
+      `SELECT * FROM clicklunch."UsuarioInfo" WHERE "email" = ($1)`,
+      [email]
     );
     if (vistaResult.rowCount > 0) {
       //Retorno de datos
@@ -276,5 +275,33 @@ const datosUsuario = async id => {
   }
 };
 
+//Verificaciones
+const auth = async (req, res) => {
+
+  try {
+    const email = req.body.email;
+    const userDatos = (await datosUsuario(email)).message;
+    if (await bcrypt.compare(req.session.token, userDatos.token)) {
+      if (req.session.email === userDatos.email) {
+        return res.status(200).json({
+          username: req.session.email,
+          token: req.session.token,
+          rol: req.session.rol
+        });
+      }
+    }
+    return res.status(401).json({
+      message: 'Error on data',
+      rol: 999
+    });
+  } catch {
+    return res.status(500).json({
+      message: 'Error on server',
+      rol: 999
+    });
+  }
+
+}
+
 //Exportaciones
-module.exports = { register, login, update, userData, usersData, logout };
+module.exports = { register, login, update, userData, usersData, logout, auth };

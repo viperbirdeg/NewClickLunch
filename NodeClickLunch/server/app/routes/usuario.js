@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { register, login, update, userData, usersData, logout } = require('../controllers/usuario.controller.js');
+const { register, login, update, userData, usersData, logout, auth } = require('../controllers/usuario.controller.js');
 
 //Registrar usuario
 router.post('/register', register);
@@ -18,5 +18,8 @@ router.get('/usersData', usersData);
 
 //Obtener un registro
 router.get('/userData', userData);
+
+//Autenticacion de usuario
+router.get('/auth', auth);
 
 module.exports = router;

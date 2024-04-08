@@ -1,5 +1,5 @@
 "use client";
-import {  Lock, Mail } from "lucide-react";
+import { Lock, Mail } from "lucide-react";
 import { signIn, } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
@@ -9,7 +9,7 @@ export default function FormInicio() {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
-    tipo:0
+    tipo: 0
   });
   const [captcha, setCaptcha] = useState();
   const [error, setError] = useState("");

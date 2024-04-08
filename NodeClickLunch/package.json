@@ -4,7 +4,8 @@
   "description": "*Cuando cree este codigo solo dios y yo sabiamos como funcionaba,\r  ahora solo dios sabe.*",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server/index.js",
+    "dev": "nodemon server/index.js",
+    "start": "server/index.js",
     "build": "cd client && npm install && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,5 +24,9 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
+  },
+  "engines": {
+    "node": "v21.6.2",
+    "vscode": "^1.22.0"
   }
 }
