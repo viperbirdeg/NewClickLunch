@@ -1,4 +1,3 @@
-const e = require('express');
 const { pool } = require('../../db.js');
 const bcrypt = require('bcrypt');
 

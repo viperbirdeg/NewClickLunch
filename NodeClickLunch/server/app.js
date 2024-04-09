@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const session = require('express-session');
 
 const usuarioRouter = require('./app/routes/usuario.js');
+const pedidoRouter = require('./app/routes/pedido.js');
 const path = require('path');
 const app = express();
 
